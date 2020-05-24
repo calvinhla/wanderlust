@@ -13,7 +13,7 @@ load_dotenv()
 app = Flask(__name__)
 app.debug = True
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'password1')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI', 'postgres:///wanderlust')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgres:///wanderlust')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 
