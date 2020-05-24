@@ -4,16 +4,16 @@
 <div class="container mt-3">
     {% if users|length > 0 %}
         {% for user in users %}
-            <div class="card mb-2">
+            <div class="card transparent text-white mb-2">
                 <div class="row no-gutters">
                     <div class="col-3 col-lg-1">
                         <img src="{{user.image}}" class="card-img img-responsive" alt="...">
                     </div>
                     <div class="col-9 col-lg-11">
                         <div class="card-body">
-                            <a class="h4 card-title text-dark" href="/users/{{ user.username }}">{{ user.first_name }} {{ user.last_name }} <span class="h6 text-black-50">({{ user.username }})</span></a>
+                            <a class="h4 card-title text-white stretched-link text-decoration-none" href="/users/{{ user.username }}">{{ user.first_name }} {{ user.last_name }} <span class="h6 text-secondary">({{ user.username }})</span></a>
                             <br>
-                            <small class="m-0">Albums: 0</small>
+                            <small class="m-0">Albums: {{ user.albums|length }}</small>
                         </div>
                     </div>
                 </div>

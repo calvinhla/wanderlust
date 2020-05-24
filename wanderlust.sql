@@ -189,6 +189,10 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.albums (id, user_id, country_id, title, created_on) FROM stdin;
+1	1	1	test	2020-05-24 22:17:57.76001
+2	1	1	test	2020-05-24 22:18:05.51304
+3	1	3	test	2020-05-24 22:23:54.366381
+4	1	1	Test	2020-05-24 22:24:00.923693
 \.
 
 
@@ -456,6 +460,7 @@ COPY public.countries (id, iso, name, nicename) FROM stdin;
 --
 
 COPY public.photos (id, user_id, album_id, image, upload_on) FROM stdin;
+1	1	4	https://s3-us-west-1.amazonaws.com/wanderlust.pictures/cla/AF/Test/Hearthstone%2BScreenshot%2B05-18-20%2B15.42.51.png	2020-05-24 22:24:10.926986
 \.
 
 
@@ -464,6 +469,7 @@ COPY public.photos (id, user_id, album_id, image, upload_on) FROM stdin;
 --
 
 COPY public.users (id, first_name, last_name, username, email, password, image, location, bio) FROM stdin;
+1	Calvin	La	cla	cla@osisoft.com	$2b$12$.vNwG1kAjfv/NsRWtRHEpOmZxZKB5cfeyGnXK.I.w3AmhLbr3xmtq	/static/images/default-pic.png	1	\N
 \.
 
 
@@ -471,7 +477,7 @@ COPY public.users (id, first_name, last_name, username, email, password, image, 
 -- Name: albums_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.albums_id_seq', 8, true);
+SELECT pg_catalog.setval('public.albums_id_seq', 4, true);
 
 
 --
@@ -485,14 +491,14 @@ SELECT pg_catalog.setval('public.country_seq', 1, false);
 -- Name: photos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.photos_id_seq', 30, true);
+SELECT pg_catalog.setval('public.photos_id_seq', 1, true);
 
 
 --
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 4, true);
+SELECT pg_catalog.setval('public.users_id_seq', 1, true);
 
 
 --
@@ -501,14 +507,6 @@ SELECT pg_catalog.setval('public.users_id_seq', 4, true);
 
 ALTER TABLE ONLY public.albums
     ADD CONSTRAINT albums_pkey PRIMARY KEY (id);
-
-
---
--- Name: albums albums_title_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.albums
-    ADD CONSTRAINT albums_title_key UNIQUE (title);
 
 
 --
