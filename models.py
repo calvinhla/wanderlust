@@ -78,8 +78,29 @@ class User(db.Model):
             return False
 
     
-    def edit_user(self, user, first_name, last_name, username, password, bio=None, location=None):
+    def edit_user(self, first_name, last_name, username, location, bio=None, image=None):
+        user = User.query.filter(User.username==username).first()
+        if user and self.username != username:
+            return False
+        else:
+            self.first_name = first_name
+            self.last_name = last_name
+            self.username = username
+            self.location = location
+            self.bio = bio
+            if image:
+                self.image = image
+            return self
+
+    def update_password(self, new_password):
+
+        hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+            
+        self.password = hashed_password
+        db.session.add(self)
+        db.session.commit()
         return True
+
 
     def __repr__(self):
         return f'<{self.id}. {self.first_name} {self.last_name} ({self.username})>'

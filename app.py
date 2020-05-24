@@ -4,7 +4,7 @@ from forms import RegistrationForm, LoginForm, EditUserForm, EditPasswordForm, C
 from werkzeug.utils import secure_filename
 from functools import wraps
 from dotenv import load_dotenv
-from aws import add_profile_picture, delete_folder, add_photos
+from aws import add_profile_picture, delete_folder, add_photos, s3_delete_image, s3_delete_album
 from utilities import PhotoManager, AlbumManager
 import base64
 import os
@@ -93,7 +93,7 @@ def login_user():
             return redirect(f'/users/{user.username}')
         else:
             form.username.errors.append('Invalid username or password')
-    return render_template('login.html', form=form)
+    return render_template('form.html', form=form)
 
 @app.route('/logout')
 @login_required
@@ -177,8 +177,20 @@ def edit_user(username):
         username = form.username.data
         location = form.location.data
         bio = form.bio.data 
-        print(image)
-        return('*')
+        if type(image) is str:
+            user = g.user.edit_user(first_name, last_name, username, location, bio)
+        else:
+            url = add_profile_picture(username, image)
+            user = g.user.edit_user(first_name, last_name, username, location, bio, url)
+        
+        if user:
+            db.session.add(user)
+            db.session.commit()
+            return redirect(url_for('show_user', username=username))
+        else:
+            form.username.errors.append('Username has already been taken')
+            return render_template('form.html', form=form)
+
     return render_template('form.html', form=form)
 
 @app.route('/users/<string:username>/edit/password', methods=["GET", "POST"])
@@ -188,7 +200,16 @@ def edit_password(username):
 
     form = EditPasswordForm()
     if form.validate_on_submit():
-        return 'test'
+        current_password = form.current_password.data
+        new_password = form.new_password.data
+        confirm = form.confirm.data
+        user = User.authenticate(g.user.username, current_password)
+        if user:
+            user.update_password(new_password)
+            return redirect(url_for('show_user', username=username))
+        else:
+            form.current_password.errors.append('Invalid password')
+
     return render_template('form.html', form=form)
 
 
@@ -198,6 +219,9 @@ def edit_password(username):
 def delete_user(username):
 
     logout_user()
+    user_country_albums = AlbumManager.list_countries(g.user.id)
+    for country in user_country_albums:
+        country_albums[country.iso] -= len(country.albums)
     db.session.delete(g.user)
     delete_folder(username)
     db.session.commit()
@@ -223,10 +247,9 @@ def create_new_album(username):
     if form.validate_on_submit():
         title = form.title.data
         country_id = form.country.data
-        db.session.rollback()
         album = Album.add_album(g.user.id, country_id, title)
         if album:
-
+            country_albums[album.country.iso] +=1
             return redirect(f'/users/{username}/albums/{countries[country_id]["iso"]}/{album.title}')
         else:
             form.title.errors.append('Album title already exists')
@@ -253,6 +276,8 @@ def show_album_photos(username, iso, album_title):
 @current_user_required
 def delete_user_album(username, iso, album_title):
     album = AlbumManager.get_album(g.user.id, album_title)
+    country_albums[album.country.iso] -= 1 
+    s3_delete_album(username, iso, album.title)
     db.session.delete(album)
     db.session.commit()
     return redirect(url_for('show_album', username=username, iso=iso))
@@ -289,7 +314,12 @@ def upload_photos(username, iso, album_title):
                 
     return render_template('form.html', form=form)
 
-@app.route('/photos', methods=["POST"])
+@app.route('/photos/delete', methods=["DELETE"])
 @login_required
 def delete_photo():
-    return '*'
+    photo_id = request.args.get('imageId')
+    photo = PhotoManager.get_photo(photo_id)
+    s3_delete_image(g.user.username, photo.album.country.iso, photo.album.title, photo.image)
+    db.session.delete(photo)
+    db.session.commit()
+    return jsonify({'message':'Success'})

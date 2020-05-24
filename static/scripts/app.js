@@ -13,7 +13,9 @@ async function createUserMap(user){
             backgroundColor: 'rgba(0,0,0,0)',
             regionStyle: {
                 initial: {
-                    fill:'#99ff99'
+                    fill:'#99ff99',
+                    stroke: 'black',
+                    'stroke-width': '.5px'
                 }
             },
             series: {
@@ -28,7 +30,9 @@ async function createUserMap(user){
                 el.html(el.html() + `<p class="mb-0">Albums: ${data[code] || 0}</p>`);
             },
             onRegionClick: function(e, code) {
-                window.location = window.location + `/albums/${code}`
+                if (user) {
+                    window.location = window.location + `/albums/${code}`
+                }
             }
         })
     }

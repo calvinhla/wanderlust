@@ -16,6 +16,47 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: albums; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.albums (
+    id integer NOT NULL,
+    user_id integer,
+    country_id integer,
+    title character varying(50) NOT NULL,
+    created_on timestamp without time zone
+);
+
+
+ALTER TABLE public.albums OWNER TO postgres;
+
+--
+-- Name: albums_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.albums_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.albums_id_seq OWNER TO postgres;
+
+--
+-- Name: albums_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.albums_id_seq OWNED BY public.albums.id;
+
+
 --
 -- Name: country_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
@@ -30,10 +71,6 @@ CREATE SEQUENCE public.country_seq
 
 ALTER TABLE public.country_seq OWNER TO postgres;
 
-SET default_tablespace = '';
-
-SET default_table_access_method = heap;
-
 --
 -- Name: countries; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -47,6 +84,113 @@ CREATE TABLE public.countries (
 
 
 ALTER TABLE public.countries OWNER TO postgres;
+
+--
+-- Name: photos; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.photos (
+    id integer NOT NULL,
+    user_id integer,
+    album_id integer,
+    image text,
+    upload_on timestamp without time zone
+);
+
+
+ALTER TABLE public.photos OWNER TO postgres;
+
+--
+-- Name: photos_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.photos_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.photos_id_seq OWNER TO postgres;
+
+--
+-- Name: photos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.photos_id_seq OWNED BY public.photos.id;
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    id integer NOT NULL,
+    first_name character varying(50),
+    last_name character varying(50),
+    username character varying(30),
+    email text NOT NULL,
+    password text,
+    image text,
+    location integer,
+    bio character varying(100)
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.users_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
+
+
+--
+-- Name: albums id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.albums ALTER COLUMN id SET DEFAULT nextval('public.albums_id_seq'::regclass);
+
+
+--
+-- Name: photos id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.photos ALTER COLUMN id SET DEFAULT nextval('public.photos_id_seq'::regclass);
+
+
+--
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Data for Name: albums; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.albums (id, user_id, country_id, title, created_on) FROM stdin;
+\.
+
 
 --
 -- Data for Name: countries; Type: TABLE DATA; Schema: public; Owner: postgres
@@ -308,10 +452,63 @@ COPY public.countries (id, iso, name, nicename) FROM stdin;
 
 
 --
+-- Data for Name: photos; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.photos (id, user_id, album_id, image, upload_on) FROM stdin;
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users (id, first_name, last_name, username, email, password, image, location, bio) FROM stdin;
+\.
+
+
+--
+-- Name: albums_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.albums_id_seq', 8, true);
+
+
+--
 -- Name: country_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.country_seq', 1, false);
+
+
+--
+-- Name: photos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.photos_id_seq', 30, true);
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.users_id_seq', 4, true);
+
+
+--
+-- Name: albums albums_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.albums
+    ADD CONSTRAINT albums_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: albums albums_title_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.albums
+    ADD CONSTRAINT albums_title_key UNIQUE (title);
 
 
 --
@@ -320,6 +517,70 @@ SELECT pg_catalog.setval('public.country_seq', 1, false);
 
 ALTER TABLE ONLY public.countries
     ADD CONSTRAINT countries_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: photos photos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.photos
+    ADD CONSTRAINT photos_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_email_key UNIQUE (email);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_username_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_username_key UNIQUE (username);
+
+
+--
+-- Name: albums albums_country_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.albums
+    ADD CONSTRAINT albums_country_id_fkey FOREIGN KEY (country_id) REFERENCES public.countries(id);
+
+
+--
+-- Name: albums albums_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.albums
+    ADD CONSTRAINT albums_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: photos photos_album_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.photos
+    ADD CONSTRAINT photos_album_id_fkey FOREIGN KEY (album_id) REFERENCES public.albums(id) ON DELETE CASCADE;
+
+
+--
+-- Name: photos photos_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.photos
+    ADD CONSTRAINT photos_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --

@@ -23,6 +23,14 @@ def add_profile_picture(username, file):
 def delete_folder(username):
     return bucket.objects.filter(Prefix=f'{username}/').delete()
 
+def s3_delete_image(username, iso, album, image):
+    image = image.split('/').pop()
+    image = urllib.parse.unquote(image)
+    return bucket.objects.filter(Prefix=f'{username}/{iso}/{album}/{image}').delete()
+
+def s3_delete_album(username, iso, album):
+    return bucket.objects.filter(Prefix=f'{username}/{iso}/{album}/').delete()
+
 def add_photos(username, iso, title, files):
     """takes in an array of files and returns an array of URLs for the images"""
     names = []
