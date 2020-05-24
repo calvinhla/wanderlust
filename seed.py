@@ -11,7 +11,7 @@ meta = MetaData(engine)
 # User.__table__.drop(engine)
 # db.session.commit()
 
-db.create_all()
+meta.create_all()
 
 User.query.delete()
 Album.query.delete()
