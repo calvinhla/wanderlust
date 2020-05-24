@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine, MetaData
 from models import db, connect_db, User, Album, Photo, Country
+import os
 # from app import app
 
-engine = create_engine('postgres:///wanderlust')
+engine = create_engine(os.environ.get('DATABASE_URI','postgres:///wanderlust'))
 meta = MetaData(engine)
 # Photo.__table__.drop(engine)
 # db.session.commit()
