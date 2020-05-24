@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+<div>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        {% for field in form if field.widget.input_type != 'hidden' %}
+            <div>
+
+            {% for error in field.errors %}
+                <p class="text-danger">{{error}}</p>
+            {% endfor %}
+                {{ field.label }}
+                {{ field }}
+            </div>
+        {% endfor %}
+
+        <button type="submit">Done</button>
+    </form>
+</div>
+{% endblock %}

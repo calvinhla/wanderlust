@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+<div class="container jumbotron mt-3 py-5">
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+
+        {% for field in form if field.widget.input_type != 'hidden' %}
+            {% if field.type == "BooleanField" %}
+                <div class="form-check">
+                        {{ field(class_="form-check-input") }}
+                        {{ field.label(class_="text-white form-check-label") }}
+
+                        {% for error in field.errors %}
+                        <p class="text-danger m-0">{{error}}</p>
+                        {% endfor %}
+                </div>
+            {% elif field.type == "FileField" or field.type == "MultipleFileField" %}
+                <div class="form-group">
+
+                    {{field.label}}
+                    {{field(class_="form-control-file")}}
+                    {% for error in field.errors %}
+                        <p class="text-danger m-0">{{error}}</p>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="form-group">
+                        {{ field.label(class_="text-white") }}
+                        {{ field(class_="form-control") }}
+                        
+                        {% for error in field.errors %}
+                        <p class="text-danger m-0">{{error}}</p>
+                        {% endfor %}
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-light">Submit</button>
+        </div>
+
+    </form>
+
+</div>
+{% endblock %}

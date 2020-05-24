@@ -1,0 +1,48 @@
+.avatar_pic {
+    vertical-align: middle;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+}
+
+.card-body{
+    padding: 1rem;
+}
+
+.img-responsive {
+    min-height:100%;
+}
+
+#world-map {
+    height:500px;
+}
+
+body {
+    background-image:url('../images/background.jpg');
+    background-color: #484848;
+    background-attachment: fixed;
+    background-repeat: no-repeat
+}
+
+.jumbotron {
+    color:white;
+    background-color: rgba(0, 0, 0, 0.5);
+    border:gray, 1px, solid
+}
+
+@media screen and (max-width:960px) {
+    #user-search {
+        order: 3 !important;
+    }
+}
+
+.transparent {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+}
+
+.card {
+
+    border:none;
+
+}

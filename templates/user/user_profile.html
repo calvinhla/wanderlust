@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block styles %}<link rel="stylesheet" href="/static/styles/jquery-jvectormap-2.0.5.css">{% endblock %}
+{% block content %}
+
+<div class="container mt-3">
+    <div class="jumbotron">
+        <div class="dropleft float-right">
+            <button class="btn btn-link text-white" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <a class="dropdown-item" href="/users/{{ user.username }}/albums">Albums</a>
+                {% if g.user.username == user.username %}
+                    <a class="dropdown-item" href="/users/{{ user.username }}/edit">Edit Profile</a>
+                    <a class="dropdown-item text-danger btn" data-toggle="modal" data-target="#deleteProfileModal">
+                        Delete profile
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row no-gutters">
+            <div class="col-3 col-lg-1">
+                <img src="{{user.image}}" class="card-img img-responsive" alt="...">
+            </div>
+            <div class="col-9 col-lg-11 pl-3">
+                <a class="h4 card-title text-white">{{ user.first_name }} {{ user.last_name }} <span class="h6 text-white-50">({{ user.username }})</span></a>
+                <br>
+                <small class="m-0">Albums: {{ user.albums|length }}</small>
+                <br>
+                {% if user.bio %}
+                <small>{{ user.bio }}</small>
+                {% else %}
+                <small class='text-light'>{{ user.first_name }} has been too busy traveling to update their bio</small>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div id="world-map" class="col-12"></div>
+        </div>
+    </div>
+    {% if g.user.username == user.username %}
+    <div class="modal fade" id="deleteProfileModal" tabindex="-1" role="dialog" aria-labelledby="deleteProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteProfileModalLabel">Delete Profile</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Deleting your profile is irreversible, are you sure?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-danger" form="delete-user">Yes</button>
+                <form action="/users/{{ user.username }}/delete" method="POST" id="delete-user"></form>
+            </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js" integrity="sha256-T/f7Sju1ZfNNfBh7skWn0idlCBcI3RwdLSS4/I7NQKQ=" crossorigin="anonymous"></script>
+<script src="/static/scripts/jquery-jvectormap-2.0.5.min.js"></script>
+<script src="/static/scripts/jquery-jvectormap-world-mill.js"></script> 
+<script src="/static/scripts/app.js"></script>
+{% endblock %}

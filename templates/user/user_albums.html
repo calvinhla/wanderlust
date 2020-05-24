@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-3">
+    <div class="row my-2 px-3 justify-content-between">
+        <a class="btn btn-secondary text-white" href="/users/{{ g.user.username }}/albums">Back to countries</a>
+        {% if g.user.username == username %}
+        <a class="btn btn-secondary text-white" href="/users/{{ g.user.username }}/albums/new">Add Album</a>
+        {% endif %}
+    </div>
+
+    {% if albums|length > 0 %}
+        <div class="row">
+        {% for album in albums %}
+            <div class="col-12 col-md-4 mb-2">
+                <div class="card transparent">
+                    <div class="card-body">
+                        <div class="float-right">
+                            <img src="https://www.countryflags.io/{{ album.country.iso }}/flat/32.png">
+                        </div>
+                        <a class="card-title h5 text-white stretched-link text-decoration-none" href="/users/{{ username }}/albums/{{ album.country.iso }}/{{ album.title }}">{{ album.title }}</a>
+                        <p class="card-text m-0">Photos: {{ album.photos|length }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <h4 class="text-center">No albums found.</h4>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block styles %} 
+<link rel="stylesheet" href="/static/styles/user_photo.css">
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-3">
+    <div class="row my-2 justify-content-between">
+        <a class="btn btn-secondary text-white" href="../{{ iso }}">Back to albums</a>
+        {% if g.user.username == username %}
+        <a class="btn btn-secondary text-white" href="{{ album.title }}/upload">Add photos</a>
+        {% endif %}
+    </div>
+</div>
+<div class="container transparent">
+{% if g.user.username == username %}
+<div class="dropleft float-right mt-2">
+    <button class="btn btn-link text-white" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-ellipsis-v"></i>
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+            <a class="dropdown-item text-danger btn" data-toggle="modal" data-target="#deleteAlbumModal">
+                Delete album
+            </a>
+    </div>
+</div>
+<div class="modal fade" id="deleteAlbumModal" tabindex="-1" role="dialog" aria-labelledby="deleteAlbumModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteAlbumModalLabel">Delete Profile</h5>
+            </div>
+            <div class="modal-body">
+                Deleting your album is irreversible, are you sure?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-danger" form="delete-album">Yes</button>
+                <form action="/users/{{ username }}/albums/{{ iso }}/{{ album.title }}/delete" method="POST" id="delete-album"></form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% if album.photos|length > 0 %}
+
+    <p class="h1 text-white mb-3">{{ album.country.nicename }}: {{ album.title }}</p>
+        <div class="card-columns">
+            {% for photo in album.photos %}
+            <div class="card">
+                <img src={{ photo.image }} class="card-img-top image-modal" alt="Uploaded on: {{ photo.upload_on }} UTC" data-toggle="modal" data-target="#imageModal" data-photo="{{ photo.id }}">
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div id="myModal" class="modal-view">
+            
+            
+            
+            
+            <!-- The close Button -->
+            <span class="close dropleft">&times;</span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-view-content" id="img01">
+            
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+            
+            {% if g.user.username == username %}
+            <div class="text-center delete-photo pt-3">
+                <button class="btn btn-danger" type="submit" form="delete-photo-form">
+                    Delete Photo
+                </button>
+                <form action="/photos" method="POST" id="delete-photo-form"></form>
+            </div>
+            {% endif %}
+        </div>
+        
+{% else %}
+<h4 class="text-center py-5">No photos uploaded!</h4>
+{% endif %}
+</div>
+        
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js" integrity="sha256-T/f7Sju1ZfNNfBh7skWn0idlCBcI3RwdLSS4/I7NQKQ=" crossorigin="anonymous"></script>
+<script src="/static/scripts/photos.js"></script>
+{% endblock %}

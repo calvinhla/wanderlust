@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block styles %}<link rel="stylesheet" href="/static/styles/jquery-jvectormap-2.0.5.css">{% endblock %}
+
+{% block content%}
+<div class="container jumbotron mt-3 py-4">
+    <h1 class="display-4">Welcome!</h1>
+    <p class="lead">Wanderlust is an application where users can save and organized their photos based on the countries they've traveled to.</p>
+    <hr class="my-4">
+    <p>Explore more of the features that Wanderlust has to offer please login to your account or consider signing up for an account!</p>
+    
+    <div class="row mt-2">
+        <div id="world-map" class="col-12"></div>
+    </div>
+    <p class="lead text-center mt-4">
+        <a class="btn btn-light" href="/signup" role="button">Sign up</a>
+        <a class="btn btn-light" href="/login" role="button">Login</a>
+    </p>  
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js" integrity="sha256-T/f7Sju1ZfNNfBh7skWn0idlCBcI3RwdLSS4/I7NQKQ=" crossorigin="anonymous"></script>
+<script src="/static/scripts/jquery-jvectormap-2.0.5.min.js"></script>
+<script src="/static/scripts/jquery-jvectormap-world-mill.js"></script> 
+<script src="/static/scripts/app.js"></script>
+{% endblock %}
