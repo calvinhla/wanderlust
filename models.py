@@ -129,20 +129,21 @@ class Album(db.Model):
 
     country_id = db.Column(db.Integer, db.ForeignKey('countries.id'))
 
-    title = db.Column(db.String(50), nullable=False, unique=True)
+    title = db.Column(db.String(50), nullable=False)
 
     created_on = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     @classmethod
     def add_album(cls, user_id, country_id, title):
         db.session.remove()
-        try:
+        album = cls.query.filter(cls.user_id==user_id, cls.country_id==country_id, cls.title==title).first()
+        if album:
+            return None
+        else:
             album = cls(user_id=user_id, country_id=country_id, title=title)
             db.session.add(album)
             db.session.commit()
             return album
-        except:
-            return None
 
 class Photo(db.Model):
 

@@ -241,7 +241,6 @@ def user_albums(username):
 @login_required
 @current_user_required
 def create_new_album(username):
-
     form = CreateAlbumForm()
     form.country.choices=country_choices
     if form.validate_on_submit():
